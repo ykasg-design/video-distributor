@@ -2,7 +2,18 @@
 <h1>TikTok authorization</h1><div id="r">Reading result&hellip;</div>
 <script>
 var p=new URLSearchParams(location.search),r=document.getElementById('r');
-if(p.get('error')){r.textContent='Authorization failed: '+p.get('error')+' '+(p.get('error_description')||'');}
+var webState=sessionStorage.getItem('vd_oauth_state');
+var HELPER=sessionStorage.getItem('vd_helper')||'http://127.0.0.1:8765';
+if(p.get('error')){r.textContent='Authorization failed: '+p.get('error')+' '+(p.get('error_description')||'');if(webState){r.innerHTML+='<p><a href="publish.html">Back to Publish</a></p>';}}
+else if(p.get('code')&&webState&&p.get('state')===webState){
+  // Started from publish.html: hand the code to the local publishing service, which holds the client secret.
+  r.textContent='Connecting your TikTok account\u2026';
+  sessionStorage.removeItem('vd_oauth_state');
+  fetch(HELPER+'/auth/exchange',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:p.get('code'),state:p.get('state')})})
+   .then(function(x){return x.json().then(function(j){if(!x.ok)throw new Error((j.error&&j.error.message)||('HTTP '+x.status));return j;});})
+   .then(function(j){sessionStorage.setItem('vd_session',j.session);location.replace('publish.html');})
+   .catch(function(e){r.innerHTML='<p></p><p><a href="publish.html">Back to Publish</a></p>';r.firstChild.textContent='Could not finish connecting: '+e.message;});
+}
 else if(p.get('code')){r.innerHTML='<p>Authorization succeeded. Copy this whole address and send it back to finish connecting:</p><p><code></code></p>';r.querySelector('code').textContent=location.href;}
 else{r.textContent='No authorization result in this address.';}
 </script></body></html>
