@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;max-width:760px;margin:40px auto;padding:0 16px;line-height:1.6;color:#1a1a1a;background:#fff}h1{font-size:28px}h2{font-size:19px;margin-top:28px}a{color:#e0284f}nav a{margin-right:16px}code{background:#f2f2f2;padding:2px 6px;border-radius:4px;word-break:break-all}</style><title>Authorization</title></head><body><nav><a href="./">Home</a><a href="terms.html">Terms of Service</a><a href="privacy.html">Privacy Policy</a></nav>
+<h1>TikTok authorization</h1><div id="r">Reading result&hellip;</div>
+<script>
+var p=new URLSearchParams(location.search),r=document.getElementById('r');
+if(p.get('error')){r.textContent='Authorization failed: '+p.get('error')+' '+(p.get('error_description')||'');}
+else if(p.get('code')){r.innerHTML='<p>Authorization succeeded. Copy this whole address and send it back to finish connecting:</p><p><code></code></p>';r.querySelector('code').textContent=location.href;}
+else{r.textContent='No authorization result in this address.';}
+</script></body></html>
